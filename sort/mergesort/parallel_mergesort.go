@@ -20,6 +20,4 @@ func parallelMergesort(slice []int) []int {
 		<-done
 		return merge(left, right)
 	}
-
-	return slice
 }
