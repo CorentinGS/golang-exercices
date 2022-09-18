@@ -155,25 +155,6 @@ func Benchmark_parallelmergesort(b *testing.B) {
 	}
 }
 
-func Benchmark_parallelmergesorttry(b *testing.B) {
-	max := []int{2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 3072, 4096}
-	input := 1000000
-
-	for _, m := range max {
-		b.Run(fmt.Sprintf("max_size_%d", m), func(b *testing.B) {
-			inputL := make([]int, input)
-			for i := 0; i < input; i++ {
-				inputL[i] = rand.Intn(input)
-			}
-
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				parallelMergeSortTry(inputL, m)
-			}
-		})
-	}
-}
-
 func Fuzz_mergesort(f *testing.F) {
 	testCases := []int{51, 634, 9, 8941, 354, 0}
 	slice := []int{69, 5, 6, 2, 64, 4687, 6, 54, 564, 1, 45, 4, 54, 2, 4, 41, 54, 5, 4268, 4, 514, 564, 4, 2564, 814, 6, 41, 6514, 68, 0, 5, 42, 67, 28642}
