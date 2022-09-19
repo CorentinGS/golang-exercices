@@ -2,7 +2,6 @@ package linkedList
 
 import (
 	"math/rand"
-	"reflect"
 	"testing"
 )
 
@@ -149,28 +148,70 @@ func TestLinkedList_Front(t *testing.T) {
 }
 
 func TestLinkedList_Insert(t *testing.T) {
-	type fields struct {
-		head *Node
-	}
-	type args struct {
-		index int
-		value int
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := &LinkedList{
-				head: tt.fields.head,
-			}
-			l.Insert(tt.args.index, tt.args.value)
-		})
-	}
+
+	t.Run("Test empty list", func(t *testing.T) {
+		l := LinkedList{}
+		l.Insert(0, 1)
+		if l.Size() != 1 {
+			t.Errorf("Size() = %v, want %v", l.Size(), 1)
+		}
+	})
+	t.Run("Test negative index", func(t *testing.T) {
+		l := LinkedList{}
+		l.Insert(-1, 1)
+		if l.Size() != 1 {
+			t.Errorf("Size() = %v, want %v", l.Size(), 0)
+		}
+	})
+
+	t.Run("Test index 0", func(t *testing.T) {
+		l := LinkedList{}
+		l.Insert(0, 1)
+		if l.Size() != 1 {
+			t.Errorf("Size() = %v, want %v", l.Size(), 1)
+		}
+	})
+	t.Run("Test index 1", func(t *testing.T) {
+		l := LinkedList{
+			head: &Node{
+				value: 1,
+				next:  nil,
+			},
+		}
+		l.Insert(1, 1)
+		if l.Size() != 2 {
+			t.Errorf("Size() = %v, want %v", l.Size(), 2)
+		}
+	})
+
+	t.Run("Test index 2", func(t *testing.T) {
+		l := LinkedList{
+			head: &Node{
+				value: 1,
+				next: &Node{
+					value: 2,
+					next:  nil,
+				},
+			},
+		}
+		l.Insert(1, 3)
+		if l.Size() != 3 {
+			t.Errorf("Size() = %v, want %v", l.Size(), 3)
+		}
+
+		if l.head.next.value != 3 {
+			t.Errorf("Insert() = %v, want %v", l.head.next.value, 3)
+		}
+
+		if l.Back() != 2 {
+			t.Errorf("Back() = %v, want %v", l.Back(), 2)
+		}
+
+		if l.Front() != 1 {
+			t.Errorf("Front() = %v, want %v", l.Front(), 1)
+		}
+	})
+
 }
 
 // TestLinkedList_PopBack tests the PopBack method of the LinkedList
@@ -299,105 +340,44 @@ func TestLinkedList_Size_Random(t *testing.T) {
 }
 
 func TestLinkedList_ValueAt(t *testing.T) {
-	type fields struct {
-		head *Node
+	numberOfTests := 100
+	l := LinkedList{}
+	for i := 0; i < numberOfTests; i++ {
+		l.PushBack(i)
 	}
-	type args struct {
-		index int
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := &LinkedList{
-				head: tt.fields.head,
-			}
-			if got := l.ValueAt(tt.args.index); got != tt.want {
-				t.Errorf("ValueAt() = %v, want %v", got, tt.want)
-			}
-		})
+
+	for i := 0; i < numberOfTests; i++ {
+		if l.ValueAt(i) != i {
+			t.Errorf("ValueAt() = %v, want %v", l.ValueAt(i), i)
+		}
 	}
 }
 
 func TestLinkedList_ValueNFromEnd(t *testing.T) {
-	type fields struct {
-		head *Node
+	numberOfTests := 100
+	l := LinkedList{}
+	for i := 0; i < numberOfTests; i++ {
+		l.PushBack(i)
 	}
-	type args struct {
-		n int
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := &LinkedList{
-				head: tt.fields.head,
-			}
-			if got := l.ValueNFromEnd(tt.args.n); got != tt.want {
-				t.Errorf("ValueNFromEnd() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
-func TestNode_Next(t *testing.T) {
-	type fields struct {
-		value int
-		next  *Node
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   *Node
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			n := &Node{
-				value: tt.fields.value,
-				next:  tt.fields.next,
-			}
-			if got := n.Next(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Next() = %v, want %v", got, tt.want)
-			}
-		})
+	for i := 0; i < numberOfTests; i++ {
+		if l.ValueNFromEnd(i) != numberOfTests-i-1 {
+			t.Errorf("ValueNFromEnd() = %v, want %v", l.ValueNFromEnd(i), numberOfTests-i-1)
+		}
 	}
 }
 
 func TestNode_Value(t *testing.T) {
-	type fields struct {
-		value int
-		next  *Node
+	numberOfTests := 100
+	l := LinkedList{}
+	for i := 0; i < numberOfTests; i++ {
+		l.PushBack(i)
 	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			n := &Node{
-				value: tt.fields.value,
-				next:  tt.fields.next,
-			}
-			if got := n.Value(); got != tt.want {
-				t.Errorf("Value() = %v, want %v", got, tt.want)
-			}
-		})
+
+	for i := 0; i < numberOfTests; i++ {
+		if l.head.Value() != i {
+			t.Errorf("ValueAt() = %v, want %v", l.ValueAt(i), i)
+		}
+		l.head = l.head.Next()
 	}
 }

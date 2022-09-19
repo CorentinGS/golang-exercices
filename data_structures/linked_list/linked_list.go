@@ -91,11 +91,23 @@ func (l *LinkedList) Back() int {
 }
 
 func (l *LinkedList) Insert(index, value int) {
-	node := l.head
-	for i := 0; i < index-1; i++ {
-		node = node.next
+	switch {
+	case l.Empty():
+		l.PushFront(value)
+	case index == 0:
+		l.PushFront(value)
+	case index == l.Size() || index == -1:
+		l.PushBack(value)
+	case index > 0 && index < l.Size():
+		node := l.head
+		for i := 0; i < index-1; i++ {
+			node = node.next
+		}
+		node.next = &Node{value, node.next}
+
+	default:
+		return
 	}
-	node.next = &Node{value, node.next}
 }
 
 func (l *LinkedList) Erase(index int) {
@@ -108,7 +120,7 @@ func (l *LinkedList) Erase(index int) {
 		l.PopBack()
 	case index < -1 && index > (l.Size()-1)*-1:
 		l.Erase(l.Size() + index)
-	case index < l.Size()-2 && index > 0:
+	case index < l.Size()-1 && index > 0:
 		node := l.head
 		for i := 0; i < index-1; i++ {
 			node = node.next
