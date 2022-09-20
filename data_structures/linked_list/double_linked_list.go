@@ -1,36 +1,33 @@
 package linkedList
 
-type Node struct {
+type DoubleNode struct {
 	value int
-	next  *Node
+	next  *DoubleNode
+	prev  *DoubleNode
 }
 
-func (n *Node) Value() int {
-	return n.value
-}
-
-func (n *Node) Next() *Node {
+func (n *DoubleNode) Next() *DoubleNode {
 	return n.next
 }
 
-type LinkedList struct {
-	head *Node
-	tail *Node
+func (n *DoubleNode) Prev() *DoubleNode {
+	return n.prev
 }
 
-func NewLinkedList() LinkedList {
-	return LinkedList{nil, nil}
+func (n *DoubleNode) Value() int {
+	return n.value
 }
 
-func NewFromSlice(values []int) LinkedList {
-	linkedList := NewLinkedList()
-	for _, value := range values {
-		linkedList.PushBack(value)
-	}
-	return linkedList
+type DoubleLinkedList struct {
+	head *DoubleNode
+	tail *DoubleNode
 }
 
-func (l *LinkedList) Size() int {
+func (l *DoubleLinkedList) Empty() bool {
+	return l.head == nil
+}
+
+func (l *DoubleLinkedList) Size() int {
 	size := 0
 	for n := l.head; n != nil; n = n.next {
 		size++
@@ -38,11 +35,7 @@ func (l *LinkedList) Size() int {
 	return size
 }
 
-func (l *LinkedList) Empty() bool {
-	return l.head == nil
-}
-
-func (l *LinkedList) ValueAt(index int) int {
+func (l *DoubleLinkedList) ValueAt(index int) int {
 	node := l.head
 	for i := 0; i < index; i++ {
 		node = node.next
@@ -50,14 +43,14 @@ func (l *LinkedList) ValueAt(index int) int {
 	return node.value
 }
 
-func (l *LinkedList) PushFront(value int) {
-	l.head = &Node{value, l.head}
+func (l *DoubleLinkedList) PushFront(value int) {
+	l.head = &DoubleNode{value, l.head, nil}
 	if l.tail == nil {
 		l.tail = l.head
 	}
 }
 
-func (l *LinkedList) PopFront() {
+func (l *DoubleLinkedList) PopFront() {
 	switch {
 	case l.Empty():
 		return
@@ -66,19 +59,21 @@ func (l *LinkedList) PopFront() {
 		l.tail = nil
 	default:
 		l.head = l.head.next
+		l.head.prev = nil
 	}
+
 }
 
-func (l *LinkedList) PushBack(value int) {
+func (l *DoubleLinkedList) PushBack(value int) {
 	if l.Empty() {
 		l.PushFront(value)
 		return
 	}
-	l.tail.next = &Node{value, nil}
+	l.tail.next = &DoubleNode{value, nil, l.tail}
 	l.tail = l.tail.next
 }
 
-func (l *LinkedList) PopBack() {
+func (l *DoubleLinkedList) PopBack() {
 	switch {
 	case l.Empty():
 		return
@@ -86,30 +81,26 @@ func (l *LinkedList) PopBack() {
 		l.head = nil
 		l.tail = nil
 	default:
-		node := l.head
-		for node.next.next != nil {
-			node = node.next
-		}
-		node.next = nil
-		l.tail = node
+		l.tail = l.tail.prev
+		l.tail.next = nil
 	}
 }
 
-func (l *LinkedList) Front() int {
+func (l *DoubleLinkedList) Front() int {
 	if l.Empty() {
 		return 0
 	}
 	return l.head.value
 }
 
-func (l *LinkedList) Back() int {
+func (l *DoubleLinkedList) Back() int {
 	if l.Empty() {
 		return 0
 	}
 	return l.tail.value
 }
 
-func (l *LinkedList) Insert(index, value int) {
+func (l *DoubleLinkedList) Insert(index, value int) {
 	switch {
 	case l.Empty():
 		l.PushFront(value)
@@ -122,14 +113,14 @@ func (l *LinkedList) Insert(index, value int) {
 		for i := 0; i < index-1; i++ {
 			node = node.next
 		}
-		node.next = &Node{value, node.next}
+		node.next = &DoubleNode{value, node.next, node}
 
 	default:
 		return
 	}
 }
 
-func (l *LinkedList) Erase(index int) {
+func (l *DoubleLinkedList) Erase(index int) {
 	switch {
 	case l.Empty():
 		return
@@ -145,13 +136,15 @@ func (l *LinkedList) Erase(index int) {
 			node = node.next
 		}
 		node.next = node.next.next
+		node.next.prev = node
+
 	default:
 		return
 	}
 
 }
 
-func (l *LinkedList) ValueNFromEnd(n int) int {
+func (l *DoubleLinkedList) ValueNFromEnd(n int) int {
 	node := l.head
 	for i := 0; i < l.Size()-n-1; i++ {
 		node = node.next

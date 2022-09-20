@@ -5,24 +5,23 @@ import (
 	"testing"
 )
 
-func GenerateRandomList(numberOfTests int) LinkedList {
-	l := LinkedList{}
-	for i := 0; i < numberOfTests; i++ {
-		i := rand.Intn(numberOfTests)
+func GenerateRandomDoubleList(n int) DoubleLinkedList {
+	l := DoubleLinkedList{}
+	for i := 0; i < n; i++ {
+		i := rand.Intn(n)
 		l.PushBack(i)
 	}
 	return l
 }
 
-// TestLinkedList_Back tests the Back method of the LinkedList
-func TestLinkedList_Back(t *testing.T) {
+func TestDoubleLinkedList_Back(t *testing.T) {
 	numberOfTests := 100
-	l := LinkedList{}
+	l := DoubleLinkedList{}
 	// Test empty list
 	if l.Back() != 0 {
 		t.Errorf("Back() = %v, want %v", l.Back(), 0)
 	}
-	l = GenerateRandomList(numberOfTests)
+	l = GenerateRandomDoubleList(numberOfTests)
 
 	for i := 0; i < numberOfTests; i++ {
 		l.PushBack(i)
@@ -32,10 +31,10 @@ func TestLinkedList_Back(t *testing.T) {
 	}
 }
 
-// TestLinkedList_Empty tests the Empty method of the LinkedList
-func TestLinkedList_Empty(t *testing.T) {
+func TestDoubleLinkedList_Empty(t *testing.T) {
 	type fields struct {
-		head *Node
+		head *DoubleNode
+		tail *DoubleNode
 	}
 	tests := []struct {
 		name   string
@@ -52,7 +51,7 @@ func TestLinkedList_Empty(t *testing.T) {
 		{
 			name: "Non-empty list",
 			fields: fields{
-				head: &Node{
+				head: &DoubleNode{
 					value: 1,
 					next:  nil,
 				},
@@ -62,8 +61,9 @@ func TestLinkedList_Empty(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := &LinkedList{
+			l := &DoubleLinkedList{
 				head: tt.fields.head,
+				tail: tt.fields.tail,
 			}
 			if got := l.Empty(); got != tt.want {
 				t.Errorf("Empty() = %v, want %v", got, tt.want)
@@ -72,8 +72,7 @@ func TestLinkedList_Empty(t *testing.T) {
 	}
 }
 
-// TestLinkedList_Erase tests the Erase method of the LinkedList
-func TestLinkedList_Erase(t *testing.T) {
+func TestDoubleLinkedList_Erase(t *testing.T) {
 	numberOfTests := 100
 	l := LinkedList{}
 
@@ -89,7 +88,7 @@ func TestLinkedList_Erase(t *testing.T) {
 	})
 
 	t.Run("Test last index", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		for i := 0; i < numberOfTests; i++ {
 			l.PushBack(i)
 		}
@@ -104,7 +103,7 @@ func TestLinkedList_Erase(t *testing.T) {
 	})
 
 	t.Run("Test correct index", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		for i := 0; i < numberOfTests; i++ {
 			l.PushBack(i)
 		}
@@ -121,12 +120,12 @@ func TestLinkedList_Erase(t *testing.T) {
 	})
 
 	t.Run("Test negative index -9999", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.Erase(-9999)
 	})
 
 	t.Run("Test negative index", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		for i := 0; i < numberOfTests; i++ {
 			l.PushBack(i)
 		}
@@ -139,9 +138,9 @@ func TestLinkedList_Erase(t *testing.T) {
 	})
 }
 
-func TestLinkedList_Front(t *testing.T) {
+func TestDoubleLinkedList_Front(t *testing.T) {
 	numberOfTests := 100
-	l := LinkedList{}
+	l := DoubleLinkedList{}
 	// Test empty list
 	if l.Front() != 0 {
 		t.Errorf("Front() = %v, want %v", l.Front(), 0)
@@ -155,17 +154,17 @@ func TestLinkedList_Front(t *testing.T) {
 	}
 }
 
-func TestLinkedList_Insert(t *testing.T) {
+func TestDoubleLinkedList_Insert(t *testing.T) {
 
 	t.Run("Test empty list", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.Insert(0, 1)
 		if l.Size() != 1 {
 			t.Errorf("Size() = %v, want %v", l.Size(), 1)
 		}
 	})
 	t.Run("Test negative index", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.Insert(-1, 1)
 		if l.Size() != 1 {
 			t.Errorf("Size() = %v, want %v", l.Size(), 0)
@@ -173,14 +172,14 @@ func TestLinkedList_Insert(t *testing.T) {
 	})
 
 	t.Run("Test index 0", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.Insert(0, 1)
 		if l.Size() != 1 {
 			t.Errorf("Size() = %v, want %v", l.Size(), 1)
 		}
 	})
 	t.Run("Test index 1", func(t *testing.T) {
-		l := NewLinkedList()
+		l := DoubleLinkedList{}
 		l.PushBack(1)
 		l.Insert(1, 1)
 		if l.Size() != 2 {
@@ -189,7 +188,7 @@ func TestLinkedList_Insert(t *testing.T) {
 	})
 
 	t.Run("Test index 2", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.PushBack(1)
 		l.PushBack(2)
 		l.Insert(1, 3)
@@ -209,13 +208,11 @@ func TestLinkedList_Insert(t *testing.T) {
 			t.Errorf("Front() = %v, want %v", l.Front(), 1)
 		}
 	})
-
 }
 
-// TestLinkedList_PopBack tests the PopBack method of the LinkedList
-func TestLinkedList_PopBack(t *testing.T) {
+func TestDoubleLinkedList_PopBack(t *testing.T) {
 	numberOfTests := 100
-	l := LinkedList{}
+	l := DoubleLinkedList{}
 	for i := 0; i < numberOfTests; i++ {
 		l.PushBack(i)
 	}
@@ -232,18 +229,17 @@ func TestLinkedList_PopBack(t *testing.T) {
 	}
 }
 
-// TestLinkedList_PopFront tests the PopFront method of the LinkedList
-func TestLinkedList_PopFront(t *testing.T) {
+func TestDoubleLinkedList_PopFront(t *testing.T) {
 	numberOfTests := 100
 	t.Run("Test empty list", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.PopFront()
 		if !l.Empty() {
 			t.Errorf("Empty() = %v, want %v", l.Empty(), true)
 		}
 	})
 	t.Run("Test list with 1 element", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		l.PushFront(1)
 		l.PopFront()
 		if !l.Empty() {
@@ -251,7 +247,7 @@ func TestLinkedList_PopFront(t *testing.T) {
 		}
 	})
 	t.Run("Test list with n elements", func(t *testing.T) {
-		l := LinkedList{}
+		l := DoubleLinkedList{}
 		for i := 0; i < numberOfTests; i++ {
 			l.PushBack(i)
 		}
@@ -269,10 +265,9 @@ func TestLinkedList_PopFront(t *testing.T) {
 	})
 }
 
-// TestLinkedList_PushBack tests the PushBack method of the LinkedList
-func TestLinkedList_PushBack(t *testing.T) {
+func TestDoubleLinkedList_PushBack(t *testing.T) {
 	numberOfTests := 100
-	l := LinkedList{}
+	l := DoubleLinkedList{}
 	for i := 0; i < numberOfTests; i++ {
 		l.PushBack(i)
 		if l.Back() != i {
@@ -285,10 +280,9 @@ func TestLinkedList_PushBack(t *testing.T) {
 	}
 }
 
-// TestLinkedList_PushFront tests the PushFront method of the LinkedList
-func TestLinkedList_PushFront(t *testing.T) {
+func TestDoubleLinkedList_PushFront(t *testing.T) {
 	numberOfTests := 100
-	l := LinkedList{}
+	l := DoubleLinkedList{}
 	for i := 0; i < numberOfTests; i++ {
 		l.PushFront(i)
 		if l.Front() != i {
@@ -298,117 +292,5 @@ func TestLinkedList_PushFront(t *testing.T) {
 
 	if l.Size() != numberOfTests {
 		t.Errorf("Size() = %v, want %v", l.Size(), numberOfTests)
-	}
-}
-
-// TestLinkedList_Size tests the size of the linked list
-func TestLinkedList_Size(t *testing.T) {
-	type fields struct {
-		head *Node
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   int
-	}{
-		{
-			name: "test1",
-			fields: fields{
-				head: &Node{
-					value: 1,
-					next: &Node{
-						value: 2,
-						next: &Node{
-							value: 3,
-							next:  nil,
-						},
-					},
-				},
-			},
-			want: 3,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := &LinkedList{
-				head: tt.fields.head,
-			}
-			if got := l.Size(); got != tt.want {
-				t.Errorf("Size() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestLinkedList_Size_Random tests the size of the linked list with random values
-func TestLinkedList_Size_Random(t *testing.T) {
-	numberOfNodes := []int{10, 100, 1000, 10000, 100000, 1000000}
-	for _, n := range numberOfNodes {
-		l := LinkedList{}
-		for i := 0; i < n; i++ {
-			l.PushFront(i)
-		}
-		if l.Size() != n {
-			t.Errorf("Size() = %v, want %v", l.Size(), n)
-		}
-	}
-}
-
-func TestLinkedList_ValueAt(t *testing.T) {
-	numberOfTests := 100
-	l := LinkedList{}
-	for i := 0; i < numberOfTests; i++ {
-		l.PushBack(i)
-	}
-
-	for i := 0; i < numberOfTests; i++ {
-		if l.ValueAt(i) != i {
-			t.Errorf("ValueAt() = %v, want %v", l.ValueAt(i), i)
-		}
-	}
-}
-
-func TestLinkedList_ValueNFromEnd(t *testing.T) {
-	numberOfTests := 100
-	l := LinkedList{}
-	for i := 0; i < numberOfTests; i++ {
-		l.PushBack(i)
-	}
-
-	for i := 0; i < numberOfTests; i++ {
-		if l.ValueNFromEnd(i) != numberOfTests-i-1 {
-			t.Errorf("ValueNFromEnd() = %v, want %v", l.ValueNFromEnd(i), numberOfTests-i-1)
-		}
-	}
-}
-
-func TestNode_Value(t *testing.T) {
-	numberOfTests := 100
-	l := LinkedList{}
-	for i := 0; i < numberOfTests; i++ {
-		l.PushBack(i)
-	}
-
-	for i := 0; i < numberOfTests; i++ {
-		if l.head.Value() != i {
-			t.Errorf("ValueAt() = %v, want %v", l.ValueAt(i), i)
-		}
-		l.head = l.head.Next()
-	}
-}
-
-func TestLinkedList_NewFromSlice(t *testing.T) {
-	numberOfTests := 100
-	s := make([]int, numberOfTests)
-	for i := 0; i < numberOfTests; i++ {
-		s[i] = i
-	}
-
-	l := NewFromSlice(s)
-
-	for i := 0; i < numberOfTests; i++ {
-		if l.ValueAt(i) != i {
-			t.Errorf("ValueAt() = %v, want %v", l.ValueAt(i), i)
-		}
 	}
 }

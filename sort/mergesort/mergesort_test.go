@@ -123,7 +123,7 @@ func Test_parallelmergesort_random(t *testing.T) {
 }
 
 func Benchmark_mergesort(b *testing.B) {
-	inputSize := []int{10, 100, 1000, 10000, 100000, 1000000}
+	inputSize := []int{1000000}
 	for _, size := range inputSize {
 		b.Run(fmt.Sprintf("input_size_%d", size), func(b *testing.B) {
 			input := make([]int, size)
@@ -140,7 +140,7 @@ func Benchmark_mergesort(b *testing.B) {
 }
 
 func Benchmark_parallelmergesort(b *testing.B) {
-	inputSize := []int{10, 100, 1000, 10000, 100000, 1000000}
+	inputSize := []int{1000000}
 	for _, size := range inputSize {
 		b.Run(fmt.Sprintf("input_size_%d", size), func(b *testing.B) {
 			input := make([]int, size)
@@ -157,7 +157,7 @@ func Benchmark_parallelmergesort(b *testing.B) {
 }
 
 func Benchmark_native_sort(b *testing.B) {
-	inputSize := []int{10, 100, 1000, 10000, 100000, 1000000}
+	inputSize := []int{1000000}
 	for _, size := range inputSize {
 		b.Run(fmt.Sprintf("input_size_%d", size), func(b *testing.B) {
 			input := make([]int, size)
