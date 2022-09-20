@@ -1,5 +1,9 @@
 package mergesort
 
+import "github.com/corentings/golang-exercices/sort/insertionsort"
+
+const K = 10
+
 func mergesort(array []int) []int {
 	size := len(array)
 	if size < 2 {
@@ -9,6 +13,21 @@ func mergesort(array []int) []int {
 	middle := size / 2
 
 	return merge(mergesort(array[:middle]), mergesort(array[middle:]))
+}
+
+func mergeSortInsertion(array []int) []int {
+	size := len(array)
+	if size < 2 {
+		return array
+	}
+
+	if size < K {
+		return insertionsort.Insertionsort(array)
+	}
+
+	middle := size / 2
+
+	return merge(mergeSortInsertion(array[:middle]), mergeSortInsertion(array[middle:]))
 }
 
 func merge(left, right []int) []int {

@@ -8,6 +8,14 @@ import (
 	"testing"
 )
 
+func generateRandomArray(size int) []int {
+	input := make([]int, size)
+	for i := 0; i < size; i++ {
+		input[i] = rand.Intn(size)
+	}
+	return input
+}
+
 func Test_merge(t *testing.T) {
 	type args struct {
 		left  []int
@@ -108,6 +116,39 @@ func Test_mergesort_random(t *testing.T) {
 	}
 }
 
+func Test_mergesortinsertion(t *testing.T) {
+	numberOfTests := 100
+
+	t.Run("Test mergeSortInsertion", func(t *testing.T) {
+		for i := 0; i < numberOfTests; i++ {
+			array := generateRandomArray(numberOfTests)
+			expected := make([]int, len(array))
+			copy(expected, array)
+			sort.Ints(expected)
+			if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+				t.Errorf("mergeSortInsertion() = %v, want %v", got, expected)
+			}
+		}
+	})
+
+	t.Run("Test mergeSortInsertion with empty array", func(t *testing.T) {
+		var array []int
+		var expected []int
+		if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+			t.Errorf("mergeSortInsertion() = %v, want %v", got, expected)
+		}
+	})
+
+	t.Run("Test mergeSortInsertion with one element", func(t *testing.T) {
+		array := []int{1}
+		expected := []int{1}
+		if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+			t.Errorf("Bubblesort() = %v, want %v", got, expected)
+		}
+	})
+
+}
+
 func Test_parallelmergesort_random(t *testing.T) {
 	input := make([]int, 1000000)
 	for i := 0; i < 1000000; i++ {
@@ -156,6 +197,23 @@ func Benchmark_parallelmergesort(b *testing.B) {
 	}
 }
 
+func Benchmark_mergesortinsertion(b *testing.B) {
+	inputSize := []int{1000000}
+	for _, size := range inputSize {
+		b.Run(fmt.Sprintf("input_size_%d", size), func(b *testing.B) {
+			input := make([]int, size)
+			for i := 0; i < size; i++ {
+				input[i] = rand.Intn(size)
+			}
+
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				mergeSortInsertion(input)
+			}
+		})
+	}
+}
+
 func Benchmark_native_sort(b *testing.B) {
 	inputSize := []int{1000000}
 	for _, size := range inputSize {
@@ -186,6 +244,24 @@ func Fuzz_mergesort(f *testing.F) {
 		for i := 0; i < len(got)-1; i++ {
 			if got[i] > got[i+1] {
 				t.Errorf("mergesort() = %v, want %v", got, slice)
+			}
+		}
+	})
+}
+
+func Fuzz_mergesortparallel(f *testing.F) {
+	testCases := []int{51, 634, 9, 8941, 354, 0}
+	slice := []int{69, 5, 6, 2, 64, 4687, 6, 54, 564, 1, 45, 4, 54, 2, 4, 41, 54, 5, 4268, 4, 514, 564, 4, 2564, 814, 6, 41, 6514, 68, 0, 5, 42, 67, 28642}
+
+	for _, tc := range testCases {
+		f.Add(tc)
+	}
+	f.Fuzz(func(t *testing.T, i int) {
+		slice := append(slice, i)
+		got := parallelMergesort(slice)
+		for i := 0; i < len(got)-1; i++ {
+			if got[i] > got[i+1] {
+				t.Errorf("parallelMergesort() = %v, want %v", got, slice)
 			}
 		}
 	})

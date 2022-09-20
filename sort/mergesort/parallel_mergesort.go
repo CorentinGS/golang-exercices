@@ -5,7 +5,7 @@ func parallelMergesort(slice []int) []int {
 		return slice
 	}
 	if len(slice) < 2048 {
-		return mergesort(slice)
+		return mergeSortInsertion(slice)
 	} else {
 		done := make(chan struct{})
 		defer close(done)
