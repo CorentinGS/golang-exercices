@@ -72,21 +72,21 @@ func Test_mergesort(t *testing.T) {
 		expected []int
 	}{
 		{
-			name: "Test mergesort",
+			name: "Test Mergesort",
 			args: args{
 				array: []int{1, 2, 3, 4, 5, 6, 7, 8},
 			},
 			expected: []int{1, 2, 3, 4, 5, 6, 7, 8},
 		},
 		{
-			name: "Test mergesort 2",
+			name: "Test Mergesort 2",
 			args: args{
 				array: []int{8, 7, 6, 5, 4, 3, 2, 1},
 			},
 			expected: []int{1, 2, 3, 4, 5, 6, 7, 8},
 		},
 		{
-			name: "Test mergesort 3",
+			name: "Test Mergesort 3",
 			args: args{
 				array: []int{69, 5, 6, 2, 64, 4687, 6, 54, 564, 1, 45, 4, 54, 2, 4, 41, 54, 5, 4268, 4, 514, 564, 4, 2564, 814, 6, 41, 6514, 68, 0, 5, 42, 67, 28642},
 			},
@@ -95,8 +95,8 @@ func Test_mergesort(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := mergesort(tt.args.array); !reflect.DeepEqual(got, tt.expected) {
-				t.Errorf("mergesort() = %v, want %v", got, tt.expected)
+			if got := Mergesort(tt.args.array); !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("Mergesort() = %v, want %v", got, tt.expected)
 			}
 		})
 	}
@@ -108,10 +108,10 @@ func Test_mergesort_random(t *testing.T) {
 		input[i] = rand.Intn(1000000)
 	}
 
-	got := mergesort(input)
+	got := Mergesort(input)
 	for i := 0; i < len(got)-1; i++ {
 		if got[i] > got[i+1] {
-			t.Errorf("mergesort() = %v, want %v", got, input)
+			t.Errorf("Mergesort() = %v, want %v", got, input)
 		}
 	}
 }
@@ -119,30 +119,30 @@ func Test_mergesort_random(t *testing.T) {
 func Test_mergesortinsertion(t *testing.T) {
 	numberOfTests := 100
 
-	t.Run("Test mergeSortInsertion", func(t *testing.T) {
+	t.Run("Test MergeSortInsertion", func(t *testing.T) {
 		for i := 0; i < numberOfTests; i++ {
 			array := generateRandomArray(numberOfTests)
 			expected := make([]int, len(array))
 			copy(expected, array)
 			sort.Ints(expected)
-			if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
-				t.Errorf("mergeSortInsertion() = %v, want %v", got, expected)
+			if got := MergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+				t.Errorf("MergeSortInsertion() = %v, want %v", got, expected)
 			}
 		}
 	})
 
-	t.Run("Test mergeSortInsertion with empty array", func(t *testing.T) {
+	t.Run("Test MergeSortInsertion with empty array", func(t *testing.T) {
 		var array []int
 		var expected []int
-		if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
-			t.Errorf("mergeSortInsertion() = %v, want %v", got, expected)
+		if got := MergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+			t.Errorf("MergeSortInsertion() = %v, want %v", got, expected)
 		}
 	})
 
-	t.Run("Test mergeSortInsertion with one element", func(t *testing.T) {
+	t.Run("Test MergeSortInsertion with one element", func(t *testing.T) {
 		array := []int{1}
 		expected := []int{1}
-		if got := mergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
+		if got := MergeSortInsertion(array); !reflect.DeepEqual(got, expected) {
 			t.Errorf("Bubblesort() = %v, want %v", got, expected)
 		}
 	})
@@ -155,10 +155,10 @@ func Test_parallelmergesort_random(t *testing.T) {
 		input[i] = rand.Intn(1000000)
 	}
 
-	got := parallelMergesort(input)
+	got := ParallelMergesort(input)
 	for i := 0; i < len(got)-1; i++ {
 		if got[i] > got[i+1] {
-			t.Errorf("mergesort() = %v, want %v", got, input)
+			t.Errorf("Mergesort() = %v, want %v", got, input)
 		}
 	}
 }
@@ -174,7 +174,7 @@ func Benchmark_mergesort(b *testing.B) {
 
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				mergesort(input)
+				Mergesort(input)
 			}
 		})
 	}
@@ -191,7 +191,7 @@ func Benchmark_parallelmergesort(b *testing.B) {
 
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				parallelMergesort(input)
+				ParallelMergesort(input)
 			}
 		})
 	}
@@ -208,7 +208,7 @@ func Benchmark_mergesortinsertion(b *testing.B) {
 
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				mergeSortInsertion(input)
+				MergeSortInsertion(input)
 			}
 		})
 	}
@@ -240,10 +240,10 @@ func Fuzz_mergesort(f *testing.F) {
 	}
 	f.Fuzz(func(t *testing.T, i int) {
 		slice := append(slice, i)
-		got := mergesort(slice)
+		got := Mergesort(slice)
 		for i := 0; i < len(got)-1; i++ {
 			if got[i] > got[i+1] {
-				t.Errorf("mergesort() = %v, want %v", got, slice)
+				t.Errorf("Mergesort() = %v, want %v", got, slice)
 			}
 		}
 	})
@@ -258,10 +258,10 @@ func Fuzz_mergesortparallel(f *testing.F) {
 	}
 	f.Fuzz(func(t *testing.T, i int) {
 		slice := append(slice, i)
-		got := parallelMergesort(slice)
+		got := ParallelMergesort(slice)
 		for i := 0; i < len(got)-1; i++ {
 			if got[i] > got[i+1] {
-				t.Errorf("parallelMergesort() = %v, want %v", got, slice)
+				t.Errorf("ParallelMergesort() = %v, want %v", got, slice)
 			}
 		}
 	})

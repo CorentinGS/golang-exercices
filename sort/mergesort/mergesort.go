@@ -4,7 +4,7 @@ import "github.com/corentings/golang-exercices/sort/insertionsort"
 
 const K = 10
 
-func mergesort(array []int) []int {
+func Mergesort(array []int) []int {
 	size := len(array)
 	if size < 2 {
 		return array
@@ -12,10 +12,10 @@ func mergesort(array []int) []int {
 
 	middle := size / 2
 
-	return merge(mergesort(array[:middle]), mergesort(array[middle:]))
+	return merge(Mergesort(array[:middle]), Mergesort(array[middle:]))
 }
 
-func mergeSortInsertion(array []int) []int {
+func MergeSortInsertion(array []int) []int {
 	size := len(array)
 	if size < 2 {
 		return array
@@ -27,7 +27,7 @@ func mergeSortInsertion(array []int) []int {
 
 	middle := size / 2
 
-	return merge(mergeSortInsertion(array[:middle]), mergeSortInsertion(array[middle:]))
+	return merge(MergeSortInsertion(array[:middle]), MergeSortInsertion(array[middle:]))
 }
 
 func merge(left, right []int) []int {
