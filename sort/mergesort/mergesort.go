@@ -2,7 +2,7 @@ package mergesort
 
 import "github.com/corentings/golang-exercices/sort/insertionsort"
 
-const K = 10
+const K = 12
 
 func Mergesort(array []int) []int {
 	size := len(array)
