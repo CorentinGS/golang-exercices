@@ -102,6 +102,9 @@ func (h *MinHeap) BubbleUp(index int) {
 }
 
 func (h *MinHeap) BubbleDown(index int, size int) {
+	if h.Leaf(index) {
+		return
+	}
 	for index < size {
 		leftIndex := 2*index + 1
 		rightIndex := 2*index + 2
