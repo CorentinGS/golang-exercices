@@ -1,126 +1,94 @@
 package heap
 
-type MinHeap []int
+import "fmt"
 
-func (h *MinHeap) New(array []int) {
-	for _, v := range array {
-		h.Push(v)
+type MaxHeap []int
+
+func New() *MaxHeap {
+	return &MaxHeap{}
+}
+
+func (h *MaxHeap) ToArray() []int {
+	return *h
+}
+
+func (h *MaxHeap) BuildHeap(arr []int) {
+	copy(*h, arr)
+	for i := h.Len() / 2; i >= 0; i-- {
+		h.Heapify(h.Len(), i)
 	}
 }
 
-func (h *MinHeap) Clear() {
-	*h = nil
-}
-
-func (h *MinHeap) Display() {
-	for i := 0; i < h.Len(); i++ {
-		print((*h)[i], " ")
-	}
-	println()
-}
-
-func (h *MinHeap) Leaf(index int) bool {
-	return index >= h.Len()/2 && index <= h.Len()-1
-}
-
-func (h *MinHeap) GetParent(index int) (int, bool) {
-	if index == 0 || index >= h.Len() {
-		return 0, false
-	}
-
-	return (*h)[(index-1)/2], true
-}
-
-func (h *MinHeap) GetLeftChild(index int) (int, bool) {
-	left := 2*index + 1
-	if left >= h.Len() {
-		return 0, false
-	}
-
-	return (*h)[left], true
-}
-
-func (h *MinHeap) GetRightChild(index int) (int, bool) {
-	right := 2*index + 2
-	if right >= h.Len() {
-		return 0, false
-	}
-
-	return (*h)[right], true
-}
-
-func (h *MinHeap) Len() int {
-	return len(*h)
-}
-
-func (h *MinHeap) IsEmpty() bool {
-	return h.Len() == 0
-}
-
-func (h *MinHeap) Less(i, j int) bool {
-	return (*h)[i] < (*h)[j]
-}
-
-func (h *MinHeap) Peek() (int, bool) {
-	if h.IsEmpty() {
-		return 0, false
-	}
-
-	return (*h)[0], true
-}
-
-func (h *MinHeap) Swap(i, j int) {
+func (h *MaxHeap) Swap(i, j int) {
 	(*h)[i], (*h)[j] = (*h)[j], (*h)[i]
 }
 
-func (h *MinHeap) Push(value int) {
-	*h = append(*h, value)
-	h.BubbleUp(h.Len() - 1)
-}
-
-func (h *MinHeap) Pop() (int, bool) {
+func (h *MaxHeap) Peek() (int, error) {
 	if h.IsEmpty() {
-		return 0, false
+		return 0, fmt.Errorf("heap is empty")
 	}
-
-	v := (*h)[0]
-	(*h)[0] = 0 // avoid memory leak
-	*h = (*h)[1:]
-	h.BubbleDown(0, h.Len())
-	return v, true
+	item := (*h)[0]
+	(*h)[0] = (*h)[h.Len()-1]
+	*h = (*h)[:h.Len()-1]
+	h.Heapify(h.Len(), 0)
+	return item, nil
 }
 
-func (h *MinHeap) BubbleUp(index int) {
-	for index > 0 {
-		parentIndex := (index - 1) / 2
-		if !h.Less(index, parentIndex) {
-			break
-		}
-		h.Swap(index, parentIndex)
-		index = parentIndex
+func (h *MaxHeap) Len() int {
+	return len(*h)
+}
+
+func (h *MaxHeap) HeapifyUp(index int) {
+	for h.GetParentIndex(index) >= 0 && (*h)[h.GetParentIndex(index)] < (*h)[index] {
+		(*h)[h.GetParentIndex(index)], (*h)[index] = (*h)[index], (*h)[h.GetParentIndex(index)]
+		index = h.GetParentIndex(index)
 	}
 }
 
-func (h *MinHeap) BubbleDown(index int, size int) {
-	if h.Leaf(index) {
-		return
+func (h *MaxHeap) Push(value int) {
+	*h = append(*h, value)
+	h.HeapifyUp(h.Len() - 1)
+}
+
+func (h *MaxHeap) IsEmpty() bool {
+	return h.Len() == 0
+}
+
+func (h *MaxHeap) ExtractPeek() (int, error) {
+	if h.IsEmpty() {
+		return 0, fmt.Errorf("heap is empty")
 	}
-	for index < size {
-		leftIndex := 2*index + 1
-		rightIndex := 2*index + 2
-		smallestIndex := index
-		if (leftIndex < size && h.Less(leftIndex, index)) || ((rightIndex < size) && h.Less(rightIndex, index)) {
-			if h.Less(leftIndex, rightIndex) && leftIndex < size {
-				h.Swap(index, leftIndex)
-				smallestIndex = leftIndex
-			} else {
-				h.Swap(index, rightIndex)
-				smallestIndex = rightIndex
-			}
-		}
-		if smallestIndex == index {
-			break
-		}
-		index = smallestIndex
+	return (*h)[0], nil
+}
+
+func (h *MaxHeap) Heapify(size int, i int) {
+	largest := i
+	left := h.GetLeftChildIndex(i)
+	right := h.GetRightChildIndex(i)
+
+	if left < size && (*h)[left] > (*h)[largest] {
+		largest = left
 	}
+
+	if right < size && (*h)[right] > (*h)[largest] {
+		largest = right
+	}
+
+	if largest != i {
+		(*h)[i], (*h)[largest] = (*h)[largest], (*h)[i]
+		h.Heapify(size, largest)
+	}
+
+}
+
+func (h *MaxHeap) GetParentIndex(i int) int {
+	return (i - 1) / 2
+}
+
+func (h *MaxHeap) GetLeftChildIndex(parentIndex int) int {
+	return 2*parentIndex + 1
+}
+
+func (h *MaxHeap) GetRightChildIndex(parentIndex int) int {
+	return 2*parentIndex + 2
 }
