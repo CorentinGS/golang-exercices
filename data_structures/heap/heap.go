@@ -4,8 +4,10 @@ import "fmt"
 
 type MaxHeap []int
 
-func New() *MaxHeap {
-	return &MaxHeap{}
+func New(arr []int) MaxHeap {
+	h := make(MaxHeap, len(arr))
+	h.BuildHeap(arr)
+	return h
 }
 
 func (h *MaxHeap) ToArray() []int {

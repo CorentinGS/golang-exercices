@@ -1,8 +1,9 @@
-package main
+package sort
 
 import (
 	"fmt"
 	"github.com/corentings/golang-exercices/sort/countingsort"
+	"github.com/corentings/golang-exercices/sort/heapsort"
 	"github.com/corentings/golang-exercices/sort/mergesort"
 	"github.com/corentings/golang-exercices/sort/utils"
 	"math/rand"
@@ -48,6 +49,10 @@ func Benchmark_Mergesort(b *testing.B) {
 
 func Benchmark_MergeSortInsertion(b *testing.B) {
 	benchmarkSort(b, mergesort.MergeSortInsertion)
+}
+
+func Benchmark_HeapSort(b *testing.B) {
+	benchmarkSort(b, heapsort.HeapSort)
 }
 
 /*
