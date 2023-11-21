@@ -2,6 +2,8 @@
 
 ## Apprendre le GO
 
+> Clear is better than clever.
+
 ### Go by Example
 
 Quoi de mieux pour apprendre une nouvelle technologie que des exemples ?
@@ -54,3 +56,15 @@ https://quii.gitbook.io/learn-go-with-tests/
 On a toujours besoin d'une cheatsheet complète quand on découvre un nouveau langage !
 
 https://devhints.io/go 
+
+### Le site officiel
+
+Le site officiel de Go est très bien fait et propose de nombreux tutoriels et documentations pour apprendre Go.
+
+https://go.dev/
+
+### Des Proverbes 
+
+Quelques proverbres pour apprendre Go en s'amusant ! 
+
+https://go-proverbs.github.io/
